@@ -1,7 +1,7 @@
 package Controller;
 
+import java.util.HashMap;
 import java.util.Random;
-import java.util.Vector;
 
 import javax.swing.JTextArea;
 
@@ -12,41 +12,56 @@ public class Fermi {
 	public static final String NANO = "Nano";
 	
 	
-	public Vector<Integer> GenerateRandom(Vector<Integer> game) {
+	public HashMap<Integer, String> GenerateRandom(HashMap<Integer, String> game) {
 		Random r = new Random();
 		int i; 
 		int upperBound = 10;
 		i = r.nextInt(upperBound);
-		game.add(i);
+		game.put(i, "A");
 		while (true) {
 			i = r.nextInt(upperBound);
-			if(!game.contains(i)) {
-				game.add(i);
+			if(!game.containsKey(i)) {
+				game.put(i, "B");
 				break;
 			}
 		}
 		while (true) {
 			i = r.nextInt(upperBound);
-			if(!game.contains(i)) {
-				game.add(i);
+			if(!game.containsKey(i)) {
+				game.put(i, "B");
 				break;
 			}
 		}	
 		return game;
 	}
 	
-	public void CheckNumbers(JTextArea exit,Integer value1,Integer value2,Integer value3,Vector<Integer> game) {
+	public void CheckNumbers(JTextArea exit,Integer value1,Integer value2,Integer value3,HashMap<Integer, String> game) {
 		StringBuilder str = new StringBuilder();
-		str.append(Comparator(value1, game, 0));
-		str.append(Comparator(value2, game, 0));
-		str.append(Comparator(value3, game, 0));
+
+		str.append("" + value1 + " " + value2 + " " + value3 + " : ");
+		String resultA = Comparator(value1, game, "A");
+		String resultB = Comparator(value2, game, "B");
+		String resultC = Comparator(value3, game, "C");
+		
+		str.append(resultA);
+		str.append(resultB);
+		str.append(resultC);
+		str.append("/n");
+		
+		if(resultA.equals(FERMI) && resultB.equals(FERMI) && resultC.equals(FERMI)) {
+			str.append("Comgratulations! Guesses: "+ retornarTentativas());
+		}
 		
 		exit.setText(str.toString());
 	}
 	
-	private String Comparator(Integer input, Vector<Integer> game,Integer position) {
-		if (game.contains(input)) {
-			if(game.get(position) == input) {
+	private String retornarTentativas() {
+		return null;
+	}
+
+	private String Comparator(Integer input, HashMap<Integer, String> game,String posicao) {
+		if (game.containsKey(input)) {
+			if(game.get(input).equalsIgnoreCase(posicao)) {
 				return FERMI;
 			}else {
 				return PICO;

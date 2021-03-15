@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -20,9 +21,9 @@ import Controller.Fermi;
 public class MainFrame extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField value3;
-	private JTextField value2;
-	private JTextField value1;
+	private JTextField valor3;
+	private JTextField valor2;
+	private JTextField valor1;
 
 	/**
 	 * Launch the application.
@@ -45,7 +46,7 @@ public class MainFrame extends JFrame {
 	 */
 	public MainFrame() {
 		Fermi fermi = new Fermi();
-		Vector<Integer> game = new Vector<Integer>();
+		HashMap<Integer, String> game = new HashMap<Integer, String>();
 		game = fermi.GenerateRandom(game);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,15 +82,15 @@ public class MainFrame extends JFrame {
 		gbc_label.gridy = 1;
 		contentPane.add(label, gbc_label);
 		
-		value1 = new JTextField();
-		value1.setForeground(Color.BLACK);
+		valor1 = new JTextField();
+		valor1.setForeground(Color.BLACK);
 		GridBagConstraints gbc_valor1 = new GridBagConstraints();
 		gbc_valor1.insets = new Insets(0, 0, 5, 5);
 		gbc_valor1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_valor1.gridx = 1;
 		gbc_valor1.gridy = 4;
-		contentPane.add(value1, gbc_valor1);
-		value1.setColumns(10);
+		contentPane.add(valor1, gbc_valor1);
+		valor1.setColumns(10);
 		
 		JTextArea resultadoTextArea = new JTextArea();
 		resultadoTextArea.setLineWrap(true);
@@ -102,23 +103,23 @@ public class MainFrame extends JFrame {
 		gbc_resultadoTextArea.gridy = 4;
 		contentPane.add(resultadoTextArea, gbc_resultadoTextArea);
 		
-		value2 = new JTextField();
+		valor2 = new JTextField();
 		GridBagConstraints gbc_valor2 = new GridBagConstraints();
 		gbc_valor2.insets = new Insets(0, 0, 5, 5);
 		gbc_valor2.fill = GridBagConstraints.HORIZONTAL;
 		gbc_valor2.gridx = 1;
 		gbc_valor2.gridy = 5;
-		contentPane.add(value2, gbc_valor2);
-		value2.setColumns(10);
+		contentPane.add(valor2, gbc_valor2);
+		valor2.setColumns(10);
 		
-		value3 = new JTextField();
+		valor3 = new JTextField();
 		GridBagConstraints gbc_valor3 = new GridBagConstraints();
 		gbc_valor3.insets = new Insets(0, 0, 5, 5);
 		gbc_valor3.fill = GridBagConstraints.HORIZONTAL;
 		gbc_valor3.gridx = 1;
 		gbc_valor3.gridy = 6;
-		contentPane.add(value3, gbc_valor3);
-		value3.setColumns(10);
+		contentPane.add(valor3, gbc_valor3);
+		valor3.setColumns(10);
 		
 		JButton btnOk = new JButton("ok");
 		GridBagConstraints gbc_btnOk = new GridBagConstraints();
