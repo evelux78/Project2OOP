@@ -7,7 +7,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -26,7 +28,7 @@ public class MainFrame extends JFrame {
 	private JTextField value3;
 	private JTextField value2;
 	private JTextField value1;
-	private HashMap<Integer, String> game;
+	private HashMap<String, Integer> game;
 
 	/**
 	 * Launch the application.
@@ -50,7 +52,7 @@ public class MainFrame extends JFrame {
 	public MainFrame() {
 		Fermi fermi = new Fermi();
 		TextFieldValidator validator = new TextFieldValidator();
-		game = new HashMap<Integer, String>();
+		game = new HashMap<String, Integer>();
 		game = fermi.GenerateRandom(game);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,12 +67,12 @@ public class MainFrame extends JFrame {
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
-		JLabel labelTitle = new JLabel("Farmi Guessing Game");
-		GridBagConstraints gbc_labelTitle = new GridBagConstraints();
-		gbc_labelTitle.insets = new Insets(0, 0, 5, 5);
-		gbc_labelTitle.gridx = 1;
-		gbc_labelTitle.gridy = 0;
-		contentPane.add(labelTitle, gbc_labelTitle);
+		JLabel labelTitulo = new JLabel("Farmi Guessing Game");
+		GridBagConstraints gbc_labelTitulo = new GridBagConstraints();
+		gbc_labelTitulo.insets = new Insets(0, 0, 5, 5);
+		gbc_labelTitulo.gridx = 1;
+		gbc_labelTitulo.gridy = 0;
+		contentPane.add(labelTitulo, gbc_labelTitulo);
 		
 		JLabel labelBtn = new JLabel("Enter your three guesses (0-9)");
 		GridBagConstraints gbc_labelBtn = new GridBagConstraints();
@@ -79,12 +81,12 @@ public class MainFrame extends JFrame {
 		gbc_labelBtn.gridy = 1;
 		contentPane.add(labelBtn, gbc_labelBtn);
 		
-		JLabel labelHints = new JLabel("HINTS:");
-		GridBagConstraints gbc_labelHints = new GridBagConstraints();
-		gbc_labelHints.insets = new Insets(0, 0, 5, 5);
-		gbc_labelHints.gridx = 13;
-		gbc_labelHints.gridy = 1;
-		contentPane.add(labelHints, gbc_labelHints);
+		JLabel label = new JLabel("HINTS:");
+		GridBagConstraints gbc_label = new GridBagConstraints();
+		gbc_label.insets = new Insets(0, 0, 5, 5);
+		gbc_label.gridx = 13;
+		gbc_label.gridy = 1;
+		contentPane.add(label, gbc_label);
 		
 		value1 = new JTextField();
 		value1.setForeground(Color.BLACK);
@@ -129,12 +131,35 @@ public class MainFrame extends JFrame {
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				int v1 = Integer.parseInt(value1.getText());
-				int v2 = Integer.parseInt(value2.getText());
-				int v3 = Integer.parseInt(value3.getText());
-				fermi.CheckNumbers(resultTextArea, v1, v2, v3, game);
-				if(isTerminete(resultTextArea.getText())) {
-					disableButtons();
+				ArrayList<JTextField> listFilds = new ArrayList<JTextField>();
+				listFilds.clear();
+				listFilds.add(value1);
+				listFilds.add(value2);
+				listFilds.add(value3);
+				resetError(listFilds);
+				
+				for (JTextField jTextField : listFilds) {
+					validator.textFieldValidator(jTextField);
+				}
+				validator.verifyAll(listFilds);
+				
+				if(!validator.check()) {
+					int v1 = Integer.parseInt(value1.getText());
+					int v2 = Integer.parseInt(value2.getText());
+					int v3 = Integer.parseInt(value3.getText());
+					fermi.CheckNumbers(resultTextArea, v1, v2, v3, game);
+					if(isTerminete(resultTextArea.getText())) {
+						disableButtons();
+					}
+				}
+			}
+
+			private void resetError(ArrayList<JTextField> listFilds) {
+				validator.setIsErros(false);
+				validator.setRegExp("^[0-9]");
+				validator.setErrorColor(Color.RED);
+				for (JTextField field : listFilds) {
+					field.setForeground(Color.BLACK);
 				}
 			}
 
@@ -159,6 +184,28 @@ public class MainFrame extends JFrame {
 		contentPane.add(btnOk, gbc_btnOk);
 		
 		JButton btnReset = new JButton("Reset");
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				value1.setText("");
+				value1.setForeground(Color.BLACK);
+				value2.setText("");
+				value2.setForeground(Color.BLACK);
+				value3.setText("");
+				value3.setForeground(Color.BLACK);
+				game = fermi.GenerateRandom(game);
+				resultTextArea.setText("");
+				enableElement();
+				validator.reset();
+			}
+
+			private void enableElement() {
+				value1.setEnabled(true);
+				value2.setEnabled(true);
+				value3.setEnabled(true);
+				btnOk.setEnabled(true);
+			}
+		});
+		
 		GridBagConstraints gbc_btnReset = new GridBagConstraints();
 		gbc_btnReset.insets = new Insets(0, 0, 5, 5);
 		gbc_btnReset.gridx = 1;

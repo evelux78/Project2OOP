@@ -12,30 +12,30 @@ public class Fermi {
 	public static final String NANO = "Nano";
 	
 	
-	public HashMap<Integer, String> GenerateRandom(HashMap<Integer, String> game) {
+	public HashMap<String, Integer> GenerateRandom(HashMap<String, Integer> game) {
 		Random r = new Random();
 		int i; 
 		int upperBound = 10;
 		i = r.nextInt(upperBound);
-		game.put(i, "A");
+		game.put("A", i);
 		while (true) {
 			i = r.nextInt(upperBound);
-			if(!game.containsKey(i)) {
-				game.put(i, "B");
+			if(!game.containsValue(i)) {
+				game.put("B", i);
 				break;
 			}
 		}
 		while (true) {
 			i = r.nextInt(upperBound);
-			if(!game.containsKey(i)) {
-				game.put(i, "C");
+			if(!game.containsValue(i)) {
+				game.put("C", i);
 				break;
 			}
 		}	
 		return game;
 	}
 	
-	public void CheckNumbers(JTextArea exit,Integer value1,Integer value2,Integer value3,HashMap<Integer, String> game) {
+	public void CheckNumbers(JTextArea exit,Integer value1,Integer value2,Integer value3,HashMap<String, Integer> game) {
 		StringBuilder str = new StringBuilder();
 
 		str.append("" + value1 + " " + value2 + " " + value3 + " : ");
@@ -54,9 +54,9 @@ public class Fermi {
 		exit.setText(exit.getText().concat(str.toString()));
 	}
 	
-	private String Comparator(Integer input, HashMap<Integer, String> game,String posicao) {
-		if (game.containsKey(input)) {
-			if(game.get(input).equalsIgnoreCase(posicao)) {
+	private String Comparator(Integer input, HashMap<String, Integer> game,String posicao) {
+		if (game.containsValue((input))) {
+			if(game.get(posicao).equals(input)) {
 				return FERMI;
 			}else {
 				return PICO;
