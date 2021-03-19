@@ -28,7 +28,7 @@ public class Fermi {
 		while (true) {
 			i = r.nextInt(upperBound);
 			if(!game.containsKey(i)) {
-				game.put(i, "B");
+				game.put(i, "C");
 				break;
 			}
 		}	
@@ -43,22 +43,17 @@ public class Fermi {
 		String resultB = Comparator(value2, game, "B");
 		String resultC = Comparator(value3, game, "C");
 		
-		str.append(resultA);
-		str.append(resultB);
-		str.append(resultC);
-		str.append("/n");
+		str.append(resultA + " ");
+		str.append(resultB+ " ");
+		str.append(resultC+ " ");
+		str.append("\n");
 		
 		if(resultA.equals(FERMI) && resultB.equals(FERMI) && resultC.equals(FERMI)) {
-			str.append("Comgratulations! Guesses: "+ retornarTentativas());
+			str.append("Congratulations! Guesses: "+ returnAttempts(exit.getText().concat(str.toString())));
 		}
-		
-		exit.setText(str.toString());
+		exit.setText(exit.getText().concat(str.toString()));
 	}
 	
-	private String retornarTentativas() {
-		return null;
-	}
-
 	private String Comparator(Integer input, HashMap<Integer, String> game,String posicao) {
 		if (game.containsKey(input)) {
 			if(game.get(input).equalsIgnoreCase(posicao)) {
@@ -69,4 +64,11 @@ public class Fermi {
 		}
 		return NANO;
 	}
+	
+	private Integer returnAttempts(String str) {
+		String[] qtyLine = str.split("\n");
+		return qtyLine.length;
+	}
+
+	
 }
