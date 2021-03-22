@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -50,10 +49,14 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
+		// Control - validation classes 
 		Fermi fermi = new Fermi();
 		TextFieldValidator validator = new TextFieldValidator();
+		
+		// Creating the hashmap with the game numbers 
 		game = new HashMap<String, Integer>();
 		game = fermi.GenerateRandom(game);
+		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 697, 459);
@@ -67,12 +70,12 @@ public class MainFrame extends JFrame {
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
-		JLabel labelTitulo = new JLabel("Farmi Guessing Game");
-		GridBagConstraints gbc_labelTitulo = new GridBagConstraints();
-		gbc_labelTitulo.insets = new Insets(0, 0, 5, 5);
-		gbc_labelTitulo.gridx = 1;
-		gbc_labelTitulo.gridy = 0;
-		contentPane.add(labelTitulo, gbc_labelTitulo);
+		JLabel labelTitle = new JLabel("Fermi Guessing Game");
+		GridBagConstraints gbc_labelTitle = new GridBagConstraints();
+		gbc_labelTitle.insets = new Insets(0, 0, 5, 5);
+		gbc_labelTitle.gridx = 1;
+		gbc_labelTitle.gridy = 0;
+		contentPane.add(labelTitle, gbc_labelTitle);
 		
 		JLabel labelBtn = new JLabel("Enter your three guesses (0-9)");
 		GridBagConstraints gbc_labelBtn = new GridBagConstraints();
@@ -101,13 +104,16 @@ public class MainFrame extends JFrame {
 		JTextArea resultTextArea = new JTextArea();
 		resultTextArea.setLineWrap(true);
 		resultTextArea.setEditable(false);
-		GridBagConstraints gbc_resultadoTextArea = new GridBagConstraints();
-		gbc_resultadoTextArea.gridwidth = 10;
-		gbc_resultadoTextArea.gridheight = 8;
-		gbc_resultadoTextArea.fill = GridBagConstraints.BOTH;
-		gbc_resultadoTextArea.gridx = 9;
-		gbc_resultadoTextArea.gridy = 4;
-		contentPane.add(resultTextArea, gbc_resultadoTextArea);
+		GridBagConstraints gbc_resultTextArea = new GridBagConstraints();
+		gbc_resultTextArea.gridwidth = 10;
+		gbc_resultTextArea.gridheight = 8;
+		gbc_resultTextArea.fill = GridBagConstraints.BOTH;
+		gbc_resultTextArea.gridx = 9;
+		gbc_resultTextArea.gridy = 4;
+		contentPane.add(resultTextArea, gbc_resultTextArea);
+		
+		//Method to display the values generated to the game;
+		fermi.setValueFermi(resultTextArea,game);
 		
 		value2 = new JTextField();
 		GridBagConstraints gbc_valor2 = new GridBagConstraints();
@@ -130,48 +136,55 @@ public class MainFrame extends JFrame {
 		JButton btnOk = new JButton("ok");
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//check if the game numbers are being displayed, if yes remove the values to add the result
+				if(resultTextArea.getText().contains("The random numbers are:")) {
+					resultTextArea.setText("");
+				}
+				//create the array with the input fields
+				ArrayList<JTextField> listFields = new ArrayList<JTextField>();
+				listFields.clear();
+				listFields.add(value1);
+				listFields.add(value2);
+				listFields.add(value3);
 				
-				ArrayList<JTextField> listFilds = new ArrayList<JTextField>();
-				listFilds.clear();
-				listFilds.add(value1);
-				listFilds.add(value2);
-				listFilds.add(value3);
-				resetError(listFilds);
+				// clean errors in the field
+				resetError(listFields);
 				
-				for (JTextField jTextField : listFilds) {
+				//validate all the inputs
+				for (JTextField jTextField : listFields) {
 					validator.textFieldValidator(jTextField);
 				}
-				validator.verifyAll(listFilds);
+				// validate if a field has a error;
+				validator.verifyAll(listFields);
 				
+				// if there is no error:
 				if(!validator.check()) {
+					//parse the input to numbers;
 					int v1 = Integer.parseInt(value1.getText());
 					int v2 = Integer.parseInt(value2.getText());
 					int v3 = Integer.parseInt(value3.getText());
-					fermi.CheckNumbers(resultTextArea, v1, v2, v3, game);
-					if(isTerminete(resultTextArea.getText())) {
+					// check if the input numbers are the same of the game numbers and add output to the screen
+					if(fermi.CheckNumbers(resultTextArea, v1, v2, v3, game)) {
 						disableButtons();
 					}
 				}
 			}
-
+			
+			// clean the errors in the fields
 			private void resetError(ArrayList<JTextField> listFilds) {
-				validator.setIsErros(false);
+				validator.setIsError(false);
 				validator.setRegExp("^[0-9]");
 				validator.setErrorColor(Color.RED);
 				for (JTextField field : listFilds) {
 					field.setForeground(Color.BLACK);
 				}
 			}
-
+			//disable the button when the game is over
 			private void disableButtons() {
 				value1.setEnabled(false);
 				value2.setEnabled(false);
 				value3.setEnabled(false);
 				btnOk.setEnabled(false);
-			}
-
-			private boolean isTerminete(String exit) {
-				return exit.contains("Congratulations");
 			}
 		});
 		
@@ -186,18 +199,23 @@ public class MainFrame extends JFrame {
 		JButton btnReset = new JButton("Reset");
 		btnReset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// clean the input values
 				value1.setText("");
 				value1.setForeground(Color.BLACK);
 				value2.setText("");
 				value2.setForeground(Color.BLACK);
 				value3.setText("");
 				value3.setForeground(Color.BLACK);
+				// generate new numbers for the game
 				game = fermi.GenerateRandom(game);
-				resultTextArea.setText("");
+				// display the generated game numbers;
+				fermi.setValueFermi(resultTextArea, game);
+				// enable input and ok button;
 				enableElement();
+				// reset the validation values
 				validator.reset();
 			}
-
+			// enable the input values and the Ok button;
 			private void enableElement() {
 				value1.setEnabled(true);
 				value2.setEnabled(true);
